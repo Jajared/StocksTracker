@@ -6,9 +6,9 @@ export default class StockData extends Component {
     isModalVisible: false,
   };
 
-  handleDeleteItem = (id) => {
+  handleDeleteItem = (ticker) => {
     this.setState({ isModalVisible: false });
-    this.props.deleteStockData(id);
+    this.props.deleteStockData(ticker);
   };
 
   render() {
@@ -21,7 +21,7 @@ export default class StockData extends Component {
         </TouchableOpacity>
         <Modal visible={this.state.isModalVisible} animationType="slide">
           <View style={styles.modalView}>
-            <TouchableOpacity onPress={() => this.handleDeleteItem(this.props.props.item.id)}>
+            <TouchableOpacity onPress={() => this.handleDeleteItem(this.props.props.item.Ticker)}>
               <Text style={styles.deleteButton}>Delete Item</Text>
             </TouchableOpacity>
           </View>

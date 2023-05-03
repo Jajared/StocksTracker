@@ -4,20 +4,18 @@ import { useState } from "react";
 import Piechart from "./components/Piechart/Piechart";
 import { FAB } from "@rneui/themed";
 import Dashboard from "./components/Dashboard/Dashboard";
+import AddPopUp from "./components/AddPopUp/AddPopUp";
 
 export default function App() {
   const [allStocksData, setAllStocksData] = useState([
-    { id: 1, Ticker: "AAPL", AveragePrice: 100, Shares: 20 },
-    { id: 2, Ticker: "TSLA", AveragePrice: 200, Shares: 5 },
+    { Ticker: "AAPL", AveragePrice: 100, Shares: 20 },
+    { Ticker: "TSLA", AveragePrice: 200, Shares: 5 },
   ]);
-  // Add new stock to portfolio
-  function addStock() {
-    var newData = { id: allStocksData.length + 1, Ticker: "Test", AveragePrice: 100, Shares: 2 };
-    setAllStocksData((allStocksData) => [...allStocksData, newData]);
-  }
+  const [isAddModalVisible, setAddModalVisible] = useState(false);
 
-  function deleteStock(id) {
-    const newAllStocksData = allStocksData.filter((stock) => stock.id !== id);
+  // Delete stock from portfolio
+  function deleteStock(ticker) {
+    const newAllStocksData = allStocksData.filter((stock) => stock.Ticker !== ticker);
     setAllStocksData(newAllStocksData);
   }
   return (
@@ -25,7 +23,8 @@ export default function App() {
       <StatusBar style="auto" />
       <Piechart props={allStocksData} />
       <Dashboard props={allStocksData} deleteStockData={deleteStock} />
-      <FAB title="+" onPress={() => addStock()} />
+      <FAB title="+" onPress={() => setAddModalVisible(true)} />
+      <AddPopUp props={isAddModalVisible} setProps={setAddModalVisible} stocksData={allStocksData} setStocksData={setAllStocksData} />
     </SafeAreaView>
   );
 }

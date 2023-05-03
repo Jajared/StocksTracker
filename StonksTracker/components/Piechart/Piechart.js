@@ -30,7 +30,7 @@ export default class Piechart extends Component {
     return (
       <View style={styles.container}>
         <Text style={styles.title}>My Portfolio</Text>
-        <PieChart widthAndHeight={widthAndHeight} series={stockSeries} sliceColor={sliceColor.slice(0, numOfStocks)} coverRadius={0.45} coverFill={"#FFF"} />
+        {numOfStocks ? <PieChart widthAndHeight={widthAndHeight} series={stockSeries} sliceColor={sliceColor.slice(0, numOfStocks)} coverRadius={0.45} coverFill={"#FFF"} /> : <Text>No stocks in portfolio</Text>}
       </View>
     );
   }
