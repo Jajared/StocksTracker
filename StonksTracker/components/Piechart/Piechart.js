@@ -4,10 +4,27 @@ import { StyleSheet, ScrollView, Text, View } from "react-native";
 
 export default class Piechart extends Component {
   render() {
+    function calculateTotalValue(props) {
+      var totalValue = 0;
+      props.forEach((stock) => {
+        const stockValue = stock.AveragePrice * stock.Shares;
+        totalValue += stockValue;
+      });
+      return totalValue;
+    }
+
+    function calculateSeries(props) {
+      const series = [];
+      props.forEach((stock) => {
+        const stockValue = stock.AveragePrice * stock.Shares;
+        const stockPercentage = stockValue / calculateTotalValue(props);
+        series.push(stockPercentage);
+      });
+      return series;
+    }
     const widthAndHeight = 100;
     const numOfStocks = this.props.props.length;
-    const stockName = this.props.props.map((stock) => stock[0]);
-    const stockSeries = this.props.props.map((stock) => stock[1]);
+    const stockSeries = calculateSeries(this.props.props);
     const sliceColor = ["#fbd203", "#ffb300", "#ff9100", "#ff6c00", "#ff3c00"];
 
     return (

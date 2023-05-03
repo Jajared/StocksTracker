@@ -6,26 +6,26 @@ import { FAB } from "@rneui/themed";
 import Dashboard from "./components/Dashboard/Dashboard";
 
 export default function App() {
-  const [piechartData, setPiechart] = useState([
-    ["Stocks 1", 50],
-    ["Stocks 2", 50],
-  ]);
-
   const [allStocksData, setAllStocksData] = useState([
     { id: 1, Ticker: "AAPL", AveragePrice: 100, Shares: 20 },
     { id: 2, Ticker: "TSLA", AveragePrice: 200, Shares: 5 },
   ]);
   // Add new stock to portfolio
-  function addStock(stockName, stockSeries) {
-    var newData = [stockName, stockSeries];
-    setPiechart((piechartData) => [...piechartData, newData]);
+  function addStock() {
+    var newData = { id: allStocksData.length + 1, Ticker: "Test", AveragePrice: 100, Shares: 2 };
+    setAllStocksData((allStocksData) => [...allStocksData, newData]);
+  }
+
+  function deleteStock(id) {
+    const newAllStocksData = allStocksData.filter((stock) => stock.id !== id);
+    setAllStocksData(newAllStocksData);
   }
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar style="auto" />
-      <Piechart props={piechartData} />
-      <Dashboard props={allStocksData} />
-      <FAB title="+" onPress={() => addStock("Stock 3", 50)} />
+      <Piechart props={allStocksData} />
+      <Dashboard props={allStocksData} deleteStockData={deleteStock} />
+      <FAB title="+" onPress={() => addStock()} />
     </SafeAreaView>
   );
 }
