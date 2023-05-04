@@ -10,6 +10,7 @@ export default class Dashboard extends Component {
         <View style={styles.header}>
           <Text>Ticker</Text>
           <Text>Shares</Text>
+          <Text>Average Price</Text>
           <Text>Value</Text>
         </View>
         {stocksData && <FlatList data={stocksData} renderItem={(data) => <StockData title={data.Ticker} props={data} deleteStockData={this.props.deleteStockData} />} keyExtractor={(item) => item.Ticker} />}

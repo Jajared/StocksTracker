@@ -1,6 +1,6 @@
 import PieChart from "react-native-pie-chart";
 import React, { Component } from "react";
-import { StyleSheet, ScrollView, Text, View } from "react-native";
+import { StyleSheet, ScrollView, Text, View, Dimensions } from "react-native";
 
 export default class Piechart extends Component {
   render() {
@@ -22,7 +22,8 @@ export default class Piechart extends Component {
       });
       return series;
     }
-    const widthAndHeight = 100;
+    const { width, height } = Dimensions.get("window");
+    const widthAndHeight = height * 0.15;
     const numOfStocks = this.props.props.length;
     const stockSeries = calculateSeries(this.props.props);
     const sliceColor = ["#fbd203", "#ffb300", "#ff9100", "#ff6c00", "#ff3c00"];
@@ -38,8 +39,8 @@ export default class Piechart extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     alignItems: "center",
+    margin: 10,
   },
   title: {
     fontSize: 24,
