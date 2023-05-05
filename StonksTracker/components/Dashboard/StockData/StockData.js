@@ -1,16 +1,17 @@
 import React, { Component } from "react";
 import { View, Modal, Text, StyleSheet, TouchableOpacity, useState, TextInput, SafeAreaView } from "react-native";
-
+import SellPopUp from "../../PopUp/AddPopUp/SellPopUp/SellPopUp";
 export default class StockData extends Component {
-  state = {
-    isModalVisible: false,
-    sharesSold: 0,
-    priceSold: 0,
-  };
-
-  handleDeleteItem = (ticker) => {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isModalVisible: false,
+    };
+    this.setState = this.setState.bind(this);
+  }
+  handleDeleteItem = (ticker, sharesSold, priceSold) => {
     this.setState({ isModalVisible: false });
-    this.props.deleteStockData(ticker, this.state.sharesSold, this.state.priceSold);
+    this.props.deleteStockData(ticker, sharesSold, priceSold);
   };
 
   render() {
@@ -22,18 +23,7 @@ export default class StockData extends Component {
           <Text style={styles.text}>{this.props.props.item.AveragePrice}</Text>
           <Text style={styles.text}>{this.props.props.item.TotalValue}</Text>
         </TouchableOpacity>
-        <Modal visible={this.state.isModalVisible} animationType="slide">
-          <SafeAreaView style={styles.modalView}>
-            <TextInput style={styles.input} placeholder="Number of Shares" keyboardType="numeric" onChangeText={(text) => this.setState({ sharesSold: text })} />
-            <TextInput style={styles.input} placeholder="Price Sold" keyboardType="numeric" onChangeText={(text) => this.setState({ priceSold: text })} />
-            <TouchableOpacity onPress={() => this.handleDeleteItem(this.props.props.item.Ticker)}>
-              <Text style={styles.deleteButton}>Sell</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => this.setState({ isModalVisible: false })}>
-              <Text style={styles.cancelButton}>Cancel</Text>
-            </TouchableOpacity>
-          </SafeAreaView>
-        </Modal>
+        <SellPopUp item={this.props.props.item} isVisible={this.state.isModalVisible} setVisible={this.setState} handleDeleteItem={this.handleDeleteItem} />
       </View>
     );
   }
@@ -58,22 +48,5 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     margin: 10,
-  },
-  modalView: {
-    flex: 1,
-    justifyContent: "flex-end",
-    alignItems: "center",
-    margin: 0,
-  },
-  deleteButton: {
-    backgroundColor: "red",
-    color: "white",
-    paddingVertical: 16,
-    paddingHorizontal: 32,
-  },
-  cancelButton: {
-    marginLeft: 10,
-    fontSize: 18,
-    color: "red",
   },
 });

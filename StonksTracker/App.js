@@ -4,7 +4,7 @@ import { useState } from "react";
 import Piechart from "./components/Piechart/Piechart";
 import { FAB } from "@rneui/themed";
 import Dashboard from "./components/Dashboard/Dashboard";
-import AddPopUp from "./components/AddPopUp/AddPopUp";
+import AddPopUp from "./components/PopUp/AddPopUp/AddPopUp";
 import ValueIndex from "./components/ValueIndex/ValueIndex";
 
 export default function App() {
