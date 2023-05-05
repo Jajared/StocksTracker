@@ -3,26 +3,31 @@ import { Text, StyleSheet, View } from "react-native";
 
 export default class ValueIndex extends Component {
   render() {
-    var stocksData = this.props.stocksData;
-    var totalValue = 0;
-    stocksData.forEach((stock) => {
-      totalValue += stock.TotalValue;
-    });
-    const textColor = totalValue < 0 ? "#ff3c00" : "#007f00";
+    const totalValue = this.props.portfolioValue;
+    const totalProfit = this.props.totalProfit;
+    const textColorValue = totalValue < 0 ? "#ff3c00" : "#007f00";
+    const textColorProfit = totalProfit < 0 ? "#ff3c00" : "#007f00";
     const totalValueString = totalValue < 0 ? "-$" + (totalValue * -1).toString() : "$" + totalValue.toString();
+    const totalProfitString = totalProfit < 0 ? "-$" + (totalProfit * -1).toString() : "+$" + totalProfit.toString();
     return (
       <View style={styles.container}>
-        <Text style={{ fontWeight: "bold", fontSize: 20 }}>Total Value: </Text>
-        <Text style={{ fontSize: 20, color: textColor }}>{totalValueString}</Text>
+        <View style={styles.totalValue}>
+          <Text style={{ fontWeight: "bold", fontSize: 20 }}>Total Value: </Text>
+          <Text style={{ fontSize: 20, color: textColorValue }}>{totalValueString}</Text>
+        </View>
+        <Text style={{ textAlign: "center", marginBottom: 10, color: textColorProfit }}>{totalProfitString}</Text>
       </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  container: {
+  totalValue: {
     margin: 10,
     flexDirection: "row",
     flexWrap: "wrap",
+  },
+  container: {
+    flexDirection: "column",
   },
 });

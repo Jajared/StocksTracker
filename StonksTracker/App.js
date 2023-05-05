@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View, ScrollView, SafeAreaView } from "react-native";
+import { StyleSheet, SafeAreaView } from "react-native";
 import { useState } from "react";
 import Piechart from "./components/Piechart/Piechart";
 import { FAB } from "@rneui/themed";
@@ -13,6 +13,22 @@ export default function App() {
     { Ticker: "TSLA", AveragePrice: 200, Shares: 5, TotalValue: 1000 },
   ]);
   const [isAddModalVisible, setAddModalVisible] = useState(false);
+  const [portfolioValue, setPortfolioValue] = useState(() => {
+    var totalValue = 0;
+    allStocksData.forEach((stock) => {
+      totalValue += stock.TotalValue;
+    });
+    return totalValue;
+  });
+  const [totalProfit, setTotalProfit] = useState(0);
+
+  function recalculatePortfolioValue(allStocksData) {
+    var totalValue = 0;
+    allStocksData.forEach((stock) => {
+      totalValue += stock.TotalValue;
+    });
+    setPortfolioValue(totalValue);
+  }
 
   // Delete stock from portfolio
   function deleteStock(ticker, sharesSold, priceSold) {
@@ -20,6 +36,8 @@ export default function App() {
     function updateStock(currentStock, sharesSold, priceSold) {
       var newValue = currentStock.TotalValue - sharesSold * currentStock.AveragePrice;
       var sharesRemaining = currentStock.Shares - sharesSold;
+      var profit = sharesSold * (priceSold - currentStock.AveragePrice);
+      setTotalProfit(totalProfit + profit);
       return { ...currentStock, TotalValue: newValue, Shares: sharesRemaining };
     }
     var newAllStocksData = [...allStocksData];
@@ -30,15 +48,40 @@ export default function App() {
       newAllStocksData[newAllStocksData.indexOf(currentStock)] = newStockData;
     }
     setAllStocksData(newAllStocksData);
+    recalculatePortfolioValue(newAllStocksData);
   }
+
+  function addStock(ticker, price, quantity) {
+    function recalculateAveragePrice(currentStock, price, quantity) {
+      var currentShares = currentStock.Shares;
+      var currentAveragePrice = currentStock.AveragePrice;
+      var currentTotalValue = currentShares * currentAveragePrice;
+      var newTotalValue = currentTotalValue + quantity * price;
+      var newAveragePrice = newTotalValue / (currentShares + quantity);
+      return { ...currentStock, AveragePrice: newAveragePrice, Shares: currentShares + quantity, TotalValue: newTotalValue };
+    }
+    var newAllStocksData = [...allStocksData];
+    if (newAllStocksData.some((stock) => stock.Ticker === ticker)) {
+      // Stock already exists
+      var currentStock = newAllStocksData.find((stock) => stock.Ticker === ticker);
+      newAllStocksData[newAllStocksData.indexOf(currentStock)] = recalculateAveragePrice(currentStock, +price, +quantity);
+    } else {
+      // Stock does not exist
+      var newData = { Ticker: ticker, AveragePrice: +price, Shares: +quantity, TotalValue: +price * +quantity };
+      newAllStocksData.push(newData);
+    }
+    setAllStocksData(newAllStocksData);
+    recalculatePortfolioValue(newAllStocksData);
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar style="auto" />
       <Piechart props={allStocksData} />
-      <ValueIndex stocksData={allStocksData} />
+      <ValueIndex portfolioValue={portfolioValue} totalProfit={totalProfit} />
       <Dashboard props={allStocksData} deleteStockData={deleteStock} />
       <FAB title="+" onPress={() => setAddModalVisible(true)} />
-      <AddPopUp props={isAddModalVisible} setProps={setAddModalVisible} stocksData={allStocksData} setStocksData={setAllStocksData} />
+      <AddPopUp isVisible={isAddModalVisible} setVisible={setAddModalVisible} addStock={addStock} />
     </SafeAreaView>
   );
 }

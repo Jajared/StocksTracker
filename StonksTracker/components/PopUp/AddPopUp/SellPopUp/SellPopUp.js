@@ -14,11 +14,11 @@ export default class SellPopUp extends Component {
           <TextInput style={styles.textInput} placeholder="Number of Shares" keyboardType="numeric" onChangeText={(text) => this.setState({ sharesSold: text })} />
           <TextInput style={styles.textInput} placeholder="Price Sold" keyboardType="numeric" onChangeText={(text) => this.setState({ priceSold: text })} />
           <View style={styles.buttonContainer}>
-            <TouchableOpacity onPress={() => this.props.handleDeleteItem(this.props.item.Ticker, this.state.sharesSold, this.state.priceSold)} style={styles.sellButton}>
-              <Text>Sell</Text>
-            </TouchableOpacity>
             <TouchableOpacity onPress={() => this.props.setVisible({ isModalVisible: false })} style={styles.cancelButton}>
               <Text>Cancel</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => this.props.handleDeleteItem(this.props.item.Ticker, this.state.sharesSold, this.state.priceSold)} style={styles.sellButton}>
+              <Text>Sell</Text>
             </TouchableOpacity>
           </View>
         </SafeAreaView>

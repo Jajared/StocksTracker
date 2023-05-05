@@ -1,58 +1,25 @@
 import React, { Component } from "react";
 import { View, TouchableOpacity, Text, TextInput, Modal, StyleSheet, SafeAreaView } from "react-native";
 export default class AddPopUp extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      Ticker: "",
-      AveragePrice: "",
-      Shares: "",
-      isVisible: this.props.props,
-      setVisible: this.props.setProps,
-    };
-  }
-
-  addStock(ticker, price, quantity) {
-    var currentStocksData = this.props.stocksData;
-    function recalculateAveragePrice(currentStock, price, quantity) {
-      var currentShares = currentStock.Shares;
-      var currentAveragePrice = currentStock.AveragePrice;
-      var currentTotalValue = currentShares * currentAveragePrice;
-      var newTotalValue = currentTotalValue + quantity * price;
-      var newAveragePrice = newTotalValue / (currentShares + quantity);
-      return { ...currentStock, AveragePrice: newAveragePrice, Shares: currentShares + quantity, TotalValue: newTotalValue };
-    }
-
-    if (currentStocksData.some((stock) => stock.Ticker === ticker)) {
-      // Stock already exists
-      var currentStock = currentStocksData.find((stock) => stock.Ticker === ticker);
-      var newStocksData = [...currentStocksData];
-      newStocksData[newStocksData.indexOf(currentStock)] = recalculateAveragePrice(currentStock, +price, +quantity);
-      this.props.setStocksData(newStocksData);
-    } else {
-      // Stock does not exist
-      var newData = { Ticker: ticker, AveragePrice: +price, Shares: +quantity, TotalValue: +price * +quantity };
-      this.props.setStocksData((allStocksData) => [...allStocksData, newData]);
-    }
-  }
-
+  state = {
+    ticker: "",
+    priceBought: 0,
+    sharesBought: 0,
+  };
   handleSave() {
-    this.addStock(this.state.Ticker, this.state.AveragePrice, this.state.Shares);
-    this.state.setVisible(false);
+    this.props.addStock(this.state.ticker, this.state.priceBought, this.state.sharesBought);
+    this.props.setVisible(false);
   }
 
   render() {
-    const isVisible = this.props.props;
-    const setVisible = this.props.setProps;
     return (
-      <Modal visible={isVisible} animationType="slide">
+      <Modal visible={this.props.isVisible} animationType="slide">
         <SafeAreaView style={styles.modalView}>
-          <TextInput style={{ height: 40, borderColor: "gray", borderWidth: 1, marginBottom: 10 }} onChangeText={(text) => this.setState({ Ticker: text })} placeholder="Ticker" />
-          <TextInput style={{ height: 40, borderColor: "gray", borderWidth: 1, marginBottom: 10 }} onChangeText={(text) => this.setState({ AveragePrice: text })} placeholder="Price" />
-          <TextInput style={{ height: 40, borderColor: "gray", borderWidth: 1, marginBottom: 10 }} onChangeText={(text) => this.setState({ Shares: text })} placeholder="Quantity" />
+          <TextInput style={{ height: 40, borderColor: "gray", borderWidth: 1, marginBottom: 10 }} onChangeText={(text) => this.setState({ ticker: text })} placeholder="Ticker" />
+          <TextInput style={{ height: 40, borderColor: "gray", borderWidth: 1, marginBottom: 10 }} onChangeText={(text) => this.setState({ priceBought: +text })} placeholder="Price" />
+          <TextInput style={{ height: 40, borderColor: "gray", borderWidth: 1, marginBottom: 10 }} onChangeText={(text) => this.setState({ sharesBought: +text })} placeholder="Quantity" />
           <View style={styles.buttonContainer}>
-            <TouchableOpacity onPress={() => setVisible(false)} style={[styles.button, { backgroundColor: "red" }]}>
+            <TouchableOpacity onPress={() => this.props.setVisible(false)} style={[styles.button, { backgroundColor: "red" }]}>
               <Text>Close</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => this.handleSave()} style={[styles.button, { backgroundColor: "green" }]}>
