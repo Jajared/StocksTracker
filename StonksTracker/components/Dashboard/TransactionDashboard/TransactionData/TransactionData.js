@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { View, Modal, Text, StyleSheet, TouchableOpacity, useState, TextInput, SafeAreaView } from "react-native";
-import SellPopUp from "../../PopUp/SellPopUp/SellPopUp";
+
 export default class StockData extends Component {
   constructor(props) {
     super(props);
@@ -15,15 +15,13 @@ export default class StockData extends Component {
   };
 
   render() {
+    const actionColor = this.props.props.item.Action == "Sell" ? "#ff3c00" : "#007f00";
     return (
-      <View>
-        <TouchableOpacity style={styles.container} onPress={() => this.setState({ isModalVisible: true })}>
-          <Text style={styles.text}>{this.props.props.item.Ticker}</Text>
-          <Text style={styles.text}>{this.props.props.item.Shares}</Text>
-          <Text style={styles.text}>{Math.round((this.props.props.item.AveragePrice + Number.EPSILON) * 100) / 100}</Text>
-          <Text style={styles.text}>{Math.round((this.props.props.item.TotalValue + Number.EPSILON) * 100) / 100}</Text>
-        </TouchableOpacity>
-        <SellPopUp item={this.props.props.item} isVisible={this.state.isModalVisible} setVisible={this.setState} handleDeleteItem={this.handleDeleteItem} />
+      <View style={styles.container}>
+        <Text style={[styles.text, { color: actionColor }]}>{this.props.props.item.Action}</Text>
+        <Text style={styles.text}>{this.props.props.item.Ticker}</Text>
+        <Text style={styles.text}>{this.props.props.item.Shares}</Text>
+        <Text style={styles.text}>{Math.round((this.props.props.item.Price + Number.EPSILON) * 100) / 100}</Text>
       </View>
     );
   }

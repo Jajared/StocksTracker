@@ -40,7 +40,6 @@ export default class Piechart extends Component {
 const styles = StyleSheet.create({
   container: {
     alignItems: "center",
-    margin: 10,
   },
   title: {
     fontSize: 24,

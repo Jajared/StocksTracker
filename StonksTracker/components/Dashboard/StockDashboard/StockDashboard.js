@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { StyleSheet, ScrollView, Text, View, FlatList } from "react-native";
 import StockData from "./StockData/StockData";
 
-export default class Dashboard extends Component {
+export default class StockDashboard extends Component {
   render() {
     var stocksData = this.props.props;
     return (
