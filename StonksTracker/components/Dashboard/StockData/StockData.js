@@ -20,8 +20,8 @@ export default class StockData extends Component {
         <TouchableOpacity style={styles.container} onPress={() => this.setState({ isModalVisible: true })}>
           <Text style={styles.text}>{this.props.props.item.Ticker}</Text>
           <Text style={styles.text}>{this.props.props.item.Shares}</Text>
-          <Text style={styles.text}>{this.props.props.item.AveragePrice}</Text>
-          <Text style={styles.text}>{this.props.props.item.TotalValue}</Text>
+          <Text style={styles.text}>{Math.round((this.props.props.item.AveragePrice + Number.EPSILON) * 100) / 100}</Text>
+          <Text style={styles.text}>{Math.round((this.props.props.item.TotalValue + Number.EPSILON) * 100) / 100}</Text>
         </TouchableOpacity>
         <SellPopUp item={this.props.props.item} isVisible={this.state.isModalVisible} setVisible={this.setState} handleDeleteItem={this.handleDeleteItem} />
       </View>

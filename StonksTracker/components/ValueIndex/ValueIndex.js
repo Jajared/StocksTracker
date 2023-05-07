@@ -3,8 +3,8 @@ import { Text, StyleSheet, View } from "react-native";
 
 export default class ValueIndex extends Component {
   render() {
-    const totalValue = this.props.portfolioValue;
-    const totalProfit = this.props.totalProfit;
+    const totalValue = Math.round((this.props.portfolioValue + Number.EPSILON) * 100) / 100;
+    const totalProfit = Math.round((this.props.totalProfit + Number.EPSILON) * 100) / 100;
     const textColorValue = totalValue < 0 ? "#ff3c00" : "#007f00";
     const textColorProfit = totalProfit < 0 ? "#ff3c00" : "#007f00";
     const totalValueString = totalValue < 0 ? "-$" + (totalValue * -1).toString() : "$" + totalValue.toString();
