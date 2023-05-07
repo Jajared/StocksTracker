@@ -4,15 +4,15 @@ import { View, Modal, Text, StyleSheet, TouchableOpacity, SafeAreaView, TextInpu
 export default class SellPopUp extends Component {
   state = {
     sharesSold: 0,
-    priceSold: 0,
+    priceSold: 0.0,
   };
   render() {
     return (
       <Modal visible={this.props.isVisible} animationType="slide">
         <SafeAreaView style={styles.modalView}>
           <Text style={styles.textInput}>{this.props.item.Ticker}</Text>
-          <TextInput style={styles.textInput} placeholder="Number of Shares" keyboardType="numeric" onChangeText={(text) => this.setState({ sharesSold: text })} />
-          <TextInput style={styles.textInput} placeholder="Price Sold" keyboardType="numeric" onChangeText={(text) => this.setState({ priceSold: text })} />
+          <TextInput style={styles.textInput} placeholder="Number of Shares" keyboardType="numeric" onChangeText={(text) => this.setState({ sharesSold: +text })} />
+          <TextInput style={styles.textInput} placeholder="Price Sold" keyboardType="numeric" onChangeText={(text) => this.setState({ priceSold: parseFloat(text) })} />
           <View style={styles.buttonContainer}>
             <TouchableOpacity onPress={() => this.props.setVisible({ isModalVisible: false })} style={styles.cancelButton}>
               <Text>Cancel</Text>

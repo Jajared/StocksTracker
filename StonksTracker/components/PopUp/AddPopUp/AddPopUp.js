@@ -3,7 +3,7 @@ import { View, TouchableOpacity, Text, TextInput, Modal, StyleSheet, SafeAreaVie
 export default class AddPopUp extends Component {
   state = {
     ticker: "",
-    priceBought: 0,
+    priceBought: 0.0,
     sharesBought: 0,
   };
   handleSave() {
@@ -15,9 +15,9 @@ export default class AddPopUp extends Component {
     return (
       <Modal visible={this.props.isVisible} animationType="slide">
         <SafeAreaView style={styles.modalView}>
-          <TextInput style={{ height: 40, borderColor: "gray", borderWidth: 1, marginBottom: 10 }} onChangeText={(text) => this.setState({ ticker: text })} placeholder="Ticker" />
-          <TextInput style={{ height: 40, borderColor: "gray", borderWidth: 1, marginBottom: 10 }} onChangeText={(text) => this.setState({ priceBought: +text })} placeholder="Price" />
-          <TextInput style={{ height: 40, borderColor: "gray", borderWidth: 1, marginBottom: 10 }} onChangeText={(text) => this.setState({ sharesBought: +text })} placeholder="Quantity" />
+          <TextInput style={styles.textInput} onChangeText={(text) => this.setState({ ticker: text })} placeholder="Ticker" />
+          <TextInput style={styles.textInput} onChangeText={(text) => this.setState({ priceBought: parseFloat(text) })} placeholder="Price" />
+          <TextInput style={styles.textInput} onChangeText={(text) => this.setState({ sharesBought: +text })} placeholder="Quantity" />
           <View style={styles.buttonContainer}>
             <TouchableOpacity onPress={() => this.props.setVisible(false)} style={[styles.button, { backgroundColor: "red" }]}>
               <Text>Close</Text>
@@ -33,25 +33,6 @@ export default class AddPopUp extends Component {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    flexDirection: "row",
-    justifyContent: "space-evenly",
-    alignItems: "center",
-    height: 60,
-  },
-  text: {
-    flex: 1,
-    backgroundColor: "#f5f5f5",
-    padding: 10,
-    textAlign: "center",
-    fontSize: 15,
-    fontWeight: "bold",
-  },
-  title: {
-    fontSize: 24,
-    margin: 10,
-  },
   textInput: {
     height: 40,
   },

@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { View, Modal, Text, StyleSheet, TouchableOpacity, useState, TextInput, SafeAreaView } from "react-native";
-import SellPopUp from "../../PopUp/AddPopUp/SellPopUp/SellPopUp";
+import SellPopUp from "../../PopUp/SellPopUp/SellPopUp";
 export default class StockData extends Component {
   constructor(props) {
     super(props);
