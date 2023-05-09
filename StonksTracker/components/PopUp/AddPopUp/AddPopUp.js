@@ -15,9 +15,9 @@ export default class AddPopUp extends Component {
     return (
       <Modal visible={this.props.isVisible} animationType="slide">
         <SafeAreaView style={styles.modalView}>
-          <TextInput style={styles.textInput} onChangeText={(text) => this.setState({ ticker: text })} placeholder="Ticker" />
-          <TextInput style={styles.textInput} onChangeText={(text) => this.setState({ priceBought: parseFloat(text) })} placeholder="Price" />
-          <TextInput style={styles.textInput} onChangeText={(text) => this.setState({ sharesBought: +text })} placeholder="Quantity" />
+          <TextInput style={styles.textInput} onChangeText={(text) => this.setState({ ticker: text })} placeholder="Ticker" placeholderTextColor="#808080" />
+          <TextInput style={styles.textInput} onChangeText={(text) => this.setState({ priceBought: parseFloat(text) })} placeholder="Price" placeholderTextColor="#808080" />
+          <TextInput style={styles.textInput} onChangeText={(text) => this.setState({ sharesBought: +text })} placeholder="Quantity" placeholderTextColor="#808080" />
           <View style={styles.buttonContainer}>
             <TouchableOpacity onPress={() => this.props.setVisible(false)} style={[styles.button, { backgroundColor: "red" }]}>
               <Text>Close</Text>

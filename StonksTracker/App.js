@@ -14,9 +14,21 @@ export default function App() {
   const [portfolioValue, setPortfolioValue] = useState(0);
   const [totalProfit, setTotalProfit] = useState(0);
   const [transactionHistory, setTransactionHistory] = useState([]);
-  // Create table in database
+
+  // Initialise table in database
   const createTable = () => {
     db.transaction((tx) => {
+      tx.executeSql(
+        "CREATE TABLE IF NOT EXISTS profitDb (id INTEGER PRIMARY KEY, Profit INTEGER)",
+        [],
+        (tx, results) => {
+          console.log("profitDb table created successfully");
+        },
+        (error) => {
+          console.log("Error occurred while creating the profitDb table:", error);
+        }
+      );
+
       tx.executeSql(
         "CREATE TABLE IF NOT EXISTS stocksDb (Ticker TEXT PRIMARY KEY, Shares INT, AveragePrice INT, TotalValue INT)",
         [],
@@ -41,31 +53,32 @@ export default function App() {
     });
   };
 
-  // Insert data into database
-  const initialiseData = () => {
+  // For testing purposes
+  function clearTable() {
     db.transaction((tx) => {
       tx.executeSql(
-        "INSERT INTO stocksDb (Ticker, Shares, AveragePrice, TotalValue) VALUES (?, ?, ?, ?)",
-        ["AAPL", 10, 150, 1500],
+        "DELETE FROM stocksDb",
+        [],
         (tx, results) => {
-          console.log("Data inserted successfully");
+          console.log("stocksDb table cleared successfully");
         },
         (error) => {
-          console.log("Error occurred while inserting data:", error);
+          console.log("Error occurred while clearing the stocksDb table:", error);
         }
       );
+
       tx.executeSql(
-        "INSERT INTO historyDb (Ticker, Action, Shares, Price) VALUES (?, ?, ?, ?)",
-        ["AAPL", "Buy", 10, 150],
+        "DELETE FROM historyDb",
+        [],
         (tx, results) => {
-          console.log("Data inserted successfully");
+          console.log("historyDb table cleared successfully");
         },
         (error) => {
-          console.log("Error occurred while inserting data:", error);
+          console.log("Error occurred while clearing the historyDb table:", error);
         }
       );
     });
-  };
+  }
 
   // Get stocksData from database
   const getStocksData = () => {
@@ -139,7 +152,6 @@ export default function App() {
   }
 
   function updateTransactionHistory(action, ticker, shares, price) {
-    console.log(action);
     db.transaction((tx) => {
       tx.executeSql(
         "INSERT INTO historyDb (Action, Ticker, Shares, Price) VALUES (?, ?, ?, ?)",
@@ -206,10 +218,49 @@ export default function App() {
     });
   }
 
+  // Get profit data from database
+  const getProfitData = () => {
+    return new Promise((resolve, reject) => {
+      db.transaction((tx) => {
+        tx.executeSql(
+          "SELECT * FROM profitDb",
+          [],
+          (tx, results) => {
+            var len = results.rows.length;
+            var data = [];
+            for (let i = 0; i < len; i++) {
+              let row = results.rows.item(i);
+              data.push(row);
+            }
+            resolve(data);
+          },
+          (error) => {
+            reject(error);
+          }
+        );
+      });
+    });
+  };
+
+  // Set profit data on database
+  function setProfitData(id, profit) {
+    db.transaction((tx) => {
+      tx.executeSql(
+        "INSERT OR REPLACE INTO profitDb (id, profit) VALUES (?, ?)",
+        [id, profit],
+        (tx, results) => {
+          console.log("Data updated successfully");
+        },
+        (error) => {
+          console.log("Error occurred while updating data:", error);
+        }
+      );
+    });
+  }
+
   // Get initial data (initial mount)
   useEffect(() => {
     createTable();
-    initialiseData();
     getStocksData()
       .then((data) => {
         setAllStocksData(data);
@@ -221,6 +272,13 @@ export default function App() {
     getTransactionHistoryData()
       .then((data) => {
         setTransactionHistory(data);
+      })
+      .catch((error) => {
+        console.log("Error occurred while retrieving data:", error);
+      });
+    getProfitData()
+      .then((data) => {
+        setTotalProfit(data[0].Profit);
       })
       .catch((error) => {
         console.log("Error occurred while retrieving data:", error);
@@ -239,10 +297,16 @@ export default function App() {
   function deleteStock(ticker, sharesSold, priceSold) {
     var currentStock = allStocksData.find((stock) => stock.Ticker === ticker);
     var sharesRemaining = currentStock.Shares - sharesSold;
-    var profit = sharesSold * (priceSold - currentStock.AveragePrice);
-    setTotalProfit(totalProfit + profit);
-    updateStockData(ticker, currentStock.AveragePrice, sharesRemaining);
-    updateTransactionHistory("Sell", ticker, sharesSold, priceSold);
+    if (sharesRemaining < 0) {
+      alert("Cannot sell more shares than you own");
+      return;
+    } else {
+      var profit = sharesSold * (priceSold - currentStock.AveragePrice);
+      setProfitData(1, totalProfit + profit);
+      setTotalProfit(totalProfit + profit);
+      updateStockData(ticker, currentStock.AveragePrice, sharesRemaining);
+      updateTransactionHistory("Sell", ticker, sharesSold, priceSold);
+    }
   }
 
   function addStock(ticker, price, quantity) {
